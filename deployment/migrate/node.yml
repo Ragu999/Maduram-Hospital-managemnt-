@@ -1,0 +1,12 @@
+---
+- hosts: QA
+  become: True
+  tasks:
+
+      - name: Copy node file Dev to QA
+        copy:
+          src: /Cloud-BLM-Deployment
+          dest: /
+
+      - name: Run the node script in QA 
+        command: "pm2 restart /Cloud-BLM-Deployment/startup.config.js"
