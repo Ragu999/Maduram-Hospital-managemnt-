@@ -1,0 +1,15 @@
+---
+- hosts: localhost
+  become: True
+  ignore_errors: True
+  tasks:
+  
+   - name: Make sure a service unit is stop
+     service:
+       name: cloudblm-emailnotify-service
+       state: stopped
+   
+   - name: Make sure a service unit is restart
+     service:
+       name: cloudblm-emailnotify-service
+       state: restarted

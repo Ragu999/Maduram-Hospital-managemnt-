@@ -1,0 +1,92 @@
+node('master') {
+    try {
+        stage('Checkout') {
+    	 cleanWs()
+    	 checkout([$class: 'SubversionSCM', additionalCredentials: [], excludedCommitMessages: '', excludedRegions: '', excludedRevprop: '', excludedUsers: '', filterChangelog: false, ignoreDirPropChanges: false, includedRegions: '', locations: [[cancelProcessOnExternalsFail: true, credentialsId: '585fa701-720a-4602-abe6-b977c8773a4c', depthOption: 'infinity', ignoreExternalsOption: true, local: '.', remote: 'https://192.168.1.200/svn/API/Products/Cloud BLM/Application/branches/Development branch/CloudBLM-Beta/app']], quietOperation: true, workspaceUpdater: [$class: 'UpdateUpdater']])
+    	}
+      
+ 	stage('NPM Install') {
+    		sh label: 'NPM Modules Install', script: 'npm install'
+    	}
+     	stage('Build') {
+		 sh label: 'Build', script: 'node --max_old_space_size=8192 node_modules/@angular/cli/bin/ng build --prod'
+    		sh label: 'Build', script: 'npm run server-build:prod'
+    	}
+    	stage('Publish') {
+    		
+    		sh label: 'Remove files in apps folder', script: 'sudo rm -rf  /opt/apps/UserInterface/apps/*'
+    		sh label: 'Copy dist/app', script: 'sudo cp -R ${WORKSPACE}/dist/app/* /opt/apps/UserInterface/apps'
+    	}
+    
+    
+    	stage('Please choose Testing or Not') {
+            
+                script {
+            // Define Variable
+             def USER_INPUT = input(
+                    message: 'User input required - Some Yes or Not question?',
+                    parameters: [
+                            [$class: 'ChoiceParameterDefinition',
+                             choices: ['Smoke','No'].join('\n'),
+                             name: 'input',
+                             description: 'Menu - select box option']
+                    ])
+
+            echo "if you want run Smoke: ${USER_INPUT}"
+
+            if( "${USER_INPUT}" == "Smoke"){
+                 stage('Smoke'){
+                  	   sh 'curl -u ragupathi:11b9e2fdaafae4ee5a9745c2b4eb3b8063 http://192.168.1.158:8080/job/CloudBLM_Smoke_Test/build?token=smoke'
+                  }
+                  
+            } else {
+               echo 'NOT OK WITH TESTING UNIT'
+            }
+         }
+                
+                
+                
+            
+            }
+    	
+    	stage('Please choose Regression or Not') {
+            
+                script {
+            // Define Variable
+             def USER_INPUT = input(
+                    message: 'User input required - Some Yes or No question?',
+                    parameters: [
+                            [$class: 'ChoiceParameterDefinition',
+                             choices: ['Regression','Not'].join('\n'),
+                             name: 'input',
+                             description: 'Menu - select box option']
+                    ])
+
+            echo "if you want run regression: ${USER_INPUT}"
+
+            if( "${USER_INPUT}" == "Regression"){
+                 stage('Regression'){
+               sh "curl -u ragupathi:11b9e2fdaafae4ee5a9745c2b4eb3b8063 http://192.168.1.158:8080/job/CloudBLM_Regression_Test/build?token=regression"
+                  }
+                  
+            } else {
+               echo 'ONLY SMOKE IS RUNNING '
+            }
+         }
+                
+                
+                
+            
+            }
+			
+    	
+    	currentBuild.result = 'SUCCESS'
+    } catch (Exception err) {
+        currentBuild.result = 'FAILURE'
+    }
+    stage('Notify') {
+        if(currentBuild.result == 'FAILURE') {
+           mail bcc: '', body: "Hi,\n Jenkins have some issues in  ${JOB_NAME} build #${BUILD_NUMBER} \n\n Build URL = ${BUILD_URL} \n\n Job URL = ${JOB_URL}", cc: '', from: 'sysadmin@srinsofttech.com', replyTo: '', subject: "Problem in ${JOB_NAME} build #${BUILD_NUMBER}", to: 'jagadeesan@srinsofttech.com'
+        }
+    }		
+}

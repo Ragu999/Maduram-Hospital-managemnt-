@@ -1,0 +1,11 @@
+---
+- hosts: QA
+  become: True
+  tasks:
+
+    - name: Create a zip archive of /path/to/foo
+      archive:
+       path: /opt/apps
+       dest: /apps.zip
+       format: zip
+      

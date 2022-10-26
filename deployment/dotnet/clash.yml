@@ -1,0 +1,27 @@
+---
+- hosts: QA
+  become: True
+  tasks:
+  
+   
+   - name: Make sure a service unit is stop
+     service:
+       name: cloudblm-clash-service
+       state: stopped
+   
+   - name: Remove the ClashService directory
+     command: "rm -rf /opt/apps/ClashService"
+  
+   - name: Copy ClashService file local to remote 
+     copy:
+       src: /opt/apps/ClashService    
+       dest: /opt/apps/
+
+
+   - name: Make sure a service unit is restart
+     service:
+       name: cloudblm-clash-service
+       state: restarted
+   
+  
+           

@@ -1,0 +1,15 @@
+---
+- hosts: localhost
+  become: True
+  tasks:
+  
+   - name: Make sure a service unit is stop
+     service:
+       name: GatewayService
+       state: stopped
+       
+  
+   - name: Make sure a service unit is restart
+     service:
+       name: GatewayServicecd publish
+       state: restarted

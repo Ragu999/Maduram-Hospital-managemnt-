@@ -1,0 +1,10 @@
+---
+- hosts: qa
+  become: True
+  tasks:
+
+    - name: Copy zip file local to remote 
+      copy:
+       src: /opt/apps     
+       dest: /opt/apps
+       

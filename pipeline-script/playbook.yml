@@ -1,0 +1,115 @@
+---
+- hosts: qa
+  become: True
+  become_user: root
+  gather_facts: False
+  tasks:
+      - name: Create a zip archive 
+        archive:
+            path: /opt/apps
+            dest: /
+            format: zip
+            remove: true
+
+      - name: Copy zip file local to remote 
+        copy:
+          src: /opt/apps    
+          dest: /apps.zip
+          
+
+      - name: unzip archive on remote
+        unarchive:
+            src: /opt/apps.zip
+            dest: /opt/apps
+      
+      - name: Make sure a asset service unit is stop
+        service:
+            name: cloudblm-asset-service
+            state: stopped
+
+      - name: Make sure a asset service unit is restart
+        service:
+            name: cloudblm-asset-service
+            state: restarted
+
+      - name: Make sure a clashs service unit is stop
+        service:
+            name: cloudblm-clashs-servie
+            state: stopped
+
+      - name: Make sure a clashs service unit is restart
+        service:
+            name: cloudblm-clashs-servie
+            state: restarted
+
+      - name: Make sure a email service unit is stop
+        service:
+            name: cloudblm-emailnotify-service
+            state: stopped
+   
+      - name: Make sure a email service unit is restart
+        service:
+          name: cloudblm-emailnotify-service
+          state: restarted
+
+      - name: Make sure a gateway service unit is stop
+        service:
+          name:  cloudblm-gateway-service
+          state: stopped
+       
+  
+      - name: Make sure a gateway service unit is restart
+        service:
+          name: cloudblm-gateway-service 
+          state: restarted
+
+      - name: Make sure a global asset service unit is stop
+        service:
+          name: cloudblm-globalasset-service
+          state: stopped
+
+      - name: Make sure a service global asset unit is restart
+        service:
+          name: cloudblm-globalasset-service
+          state: restarted
+
+      - name: Make sure a identity service unit is stop
+        service:
+          name: cloudblm-identity-service
+          state: stopped
+
+      - name: Make sure a identity service unit is restart
+        service:
+            name: cloudblm-identity-service
+            state: restarted
+
+      - name: Make sure a permission service unit is stop
+        service:
+              name: cloudblm-permission-service
+              state: stopped
+
+      - name: Make sure a permission service unit is restart
+        service:
+          name: cloudblm-permission-service
+          state: restarted
+
+      - name: Make sure a role service unit is stop
+        service:
+           name: cloudblm-roles-service
+           state: stopped
+       
+      - name: Make sure a role service unit is restart
+        service:
+          name: cloudblm-roles-service
+          state: restarted
+
+      - name: Make sure a user service unit is stop
+        service:
+          name: cloudblm-user-service
+          state: stopped
+
+      - name: Make sure a user service unit is restart
+        service:
+          name: cloudblm-user-service
+          state: restarted
+

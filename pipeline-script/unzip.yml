@@ -1,0 +1,13 @@
+---
+- hosts: QA
+  become: True	
+  tasks:
+
+   - name: Remove current apps directory
+     command: "sudo rm -rf /uday/apps"
+     
+   - name: Unarchive a file that is already on the remote machine
+     command: "sudo unzip /apps.zip -d /uday"
+      
+      
+      

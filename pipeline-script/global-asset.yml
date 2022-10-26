@@ -1,0 +1,14 @@
+---
+- hosts: localhost
+  become: True
+  tasks:
+   
+   - name: Make sure a service unit is stop
+     service:
+       name: cloudblm-globalasset-service
+       state: stopped
+
+   - name: Make sure a service unit is restart
+     service:
+       name: cloudblm-globalasset-service
+       state: restarted

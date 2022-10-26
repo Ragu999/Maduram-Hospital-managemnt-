@@ -1,0 +1,98 @@
+---
+- hosts: QA
+  become: True
+  tasks:
+  
+   - name: Make sure a service unit is stop
+     service:
+       name: cloudblm-asset-service
+       state: stopped
+
+   - name: Make sure a service unit is stop
+     service:
+       name: cloudblm-clash-service
+       state: stopped
+
+   - name: Make sure a service unit is stop
+     service:
+       name: cloudblm-emailnotify-service
+       state: stopped
+
+   - name: Make sure a service unit is stop
+     service:
+       name: cloudblm-gateway-service
+       state: stopped
+
+   - name: Make sure a service unit is stop
+     service:
+       name: cloudblm-globalasset-service
+       state: stopped
+
+   
+   - name: Make sure a service unit is stop
+     service:
+       name: cloudblm-permission-service
+       state: stopped
+
+   - name: Make sure a service unit is stop
+     service:
+       name: cloudblm-roles-service
+       state: stopped
+
+   - name: Make sure a service unit is stop
+     service:
+       name: cloudblm-user-service
+       state: stopped
+
+      
+   - name: Create a zip archive of /opt/apps
+     archive:
+       path: /opt/apps
+       dest: /apps.zip
+       format: zip
+
+   - name: Remove current apps directory
+     command: "sudo rm -rf /opt/apps"
+     
+   - name: Unarchive a file /apps.zip already on the remote machine
+     command: "sudo unzip /apps.zip -d /opt/"
+      
+   - name: Make sure a service unit is restart
+     service:
+       name: cloudblm-asset-service
+       state: started
+
+   - name: Make sure a service unit is restart
+     service:
+       name: cloudblm-clash-service
+       state: started
+
+   - name: Make sure a service unit is restart
+     service:
+       name: cloudblm-emailnotify-service
+       state: started
+
+   - name: Make sure a service unit is restart
+     service:
+       name: cloudblm-gateway-service
+       state: started
+       
+   - name: Make sure a service unit is restart
+     service:
+       name: cloudblm-globalasset-service
+       state: started
+
+   - name: Make sure a service unit is restart
+     service:
+       name: cloudblm-permission-service
+       state: started
+
+   - name: Make sure a service unit is restart
+     service:
+       name: cloudblm-roles-service
+       state: started
+
+   - name: Make sure a service unit is restart
+     service:
+       name: cloudblm-user-service
+       state: started
