@@ -1,4 +1,4 @@
- node('master') {
+ node('') {
     try {
     	def dotnet = '/usr/bin/dotnet'
     	stage('Checkout') {
